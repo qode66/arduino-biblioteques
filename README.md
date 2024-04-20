@@ -13,5 +13,5 @@ Traducció al català/valencià de biblioteques d'arduino.
 
 - [DHT](./biblioteques/arduino-dht-sensor-library.md)
 - [LyquidCrystal_I2C](./biblioteques/arduino-LiquidCrystal_I2C.md)
-- [SoftwareSerial](./biblioteques/Arduino/SoftwareSerial.md)
+- [SoftwareSerial](./biblioteques/Arduino/arduino-SoftwareSerial.md)
 - [Wire](./biblioteques/arduino-Wire.md)
