@@ -1,113 +1,74 @@
-# Introducció
+# Sofware Serial
 
-El maquinari d’Arduino té suport incorporat per a la comunicació en
-sèrie en els pins 0 i 1 (que també va a la computadora a través de la
-connexió USB). El suport serial nadiu ocorre a través d’una peça de
-maquinari (integrada en el xip) anomenada UART. Aquest maquinari permet
-que el xip Atmega reba comunicació en sèrie fins i tot mentre treballa
-en altres tasques, sempre que hi haja espai en el búfer en sèrie de 64
-bytes.
+Traduït de la referència d’arduino
+(<https://www.arduino.cc/en/Reference/SoftwareSerial>) el 25/01/2022.
 
-La biblioteca SoftwareSerial s’ha desenvolupat per a permetre la
-comunicació en sèrie en altres pins digitals de l’Arduino, utilitzant
-programari per a replicar la funcionalitat (d’ací el nom
-"SoftwareSerial"). És possible tindre múltiples ports serials de
-programari amb velocitats de fins a 115200 bps. Un paràmetre habilita la
-senyalització invertida per a dispositius que requereixen aqueix
-protocol.
+## Introducció
 
-La versió de SoftwareSerial inclosa en 1.0 i posteriors es basa en la
-biblioteca NewSoftSerial de Mikal Hart.
+El maquinari d’Arduino té suport incorporat per a la comunicació en sèrie en els pins 0 i 1 (que també va a la computadora a través de la connexió USB). El suport serial nadiu ocorre a través d’una peça de maquinari (integrada en el xip) anomenada UART. Aquest maquinari permet que el xip Atmega reba comunicació en sèrie fins i tot mentre treballa en altres tasques, sempre que hi haja espai en el búfer en sèrie de 64 bytes.
+
+La biblioteca SoftwareSerial s’ha desenvolupat per a permetre la comunicació en sèrie en altres pins digitals de l’Arduino, utilitzant programari per a replicar la funcionalitat (d’ací el nom "SoftwareSerial"). És possible tindre múltiples ports serials de programari amb velocitats de fins a 115200 bps. Un paràmetre habilita la senyalització invertida per a dispositius que requereixen aqueix protocol.
+
+La versió de SoftwareSerial inclosa en 1.0 i posteriors es basa en la biblioteca NewSoftSerial de Mikal Hart.
 
 Per a utilitzar aquesta biblioteca
 
 `#include <SoftwareSerial.h>`
 
-# Limitacions
+## Limitacions
 
 La biblioteca té les següents limitacions conegudes:
 
-  - Si utilitza diversos ports serie de programari, només un pot rebre
-    dades alhora.
+- Si utilitza diversos ports serie de programari, només un pot rebre dades alhora.
+- No tots els pins de Mega i Mega 2560 admeten interrupcions de canvi, per la qual cosa només es poden usar els següents per a RX: 10, 11, 12, 13, 14, 15, 50, 51, 52, 53, A8 (62), A9 ( 63), A10 (64), A11 (65), A12 (66), A13 (67), A14 (68), A15 (69).
+- No tots els pins de Leonardo i Micro admeten interrupcions de canvi, per la qual cosa només es poden usar els següents per a RX: 8, 9, 10, 11, 14 (MISO), 15 (SCK), 16 (MOSI).
+- En Arduino o Genuí 101, la velocitat RX màxima actual és de 57600 bps
+- En Arduino o Genuí 101 RX no funciona en el Pin 13
 
-  - No tots els pins de Mega i Mega 2560 admeten interrupcions de canvi,
-    per la qual cosa només es poden usar els següents per a RX: 10, 11,
-    12, 13, 14, 15, 50, 51, 52, 53, A8 (62), A9 ( 63), A10 (64), A11
-    (65), A12 (66), A13 (67), A14 (68), A15 (69).
+Si el seu projecte requereix fluxos de dades simultànies, consulte la biblioteca AltSoftSerial de Paul Stoffregen. AltSoftSerial supera una sèrie d’altres problemes amb el nucli SoftwareSerial, però té les seues pròpies limitacions. Consulte el lloc d’AltSoftSerial per a obtindre més informació.
 
-  - No tots els pins de Leonardo i Micro admeten interrupcions de canvi,
-    per la qual cosa només es poden usar els següents per a RX: 8, 9,
-    10, 11, 14 (MISO), 15 (SCK), 16 (MOSI).
+## Funcions
 
-  - En Arduino o Genuí 101, la velocitat RX màxima actual és de 57600
-    bps
+- [SoftwareSerial()](#softwareserial)
+- [available()](#softwareserial-available)
+- [begin()](#begin)
+- [isListening()](#islistening)
+- [listen()](#listen)
+- [overflow()](#overflow)
+- [peek()](#peek)
+- [print()](#print)
+- [println()](#println)
+- [read()](#read)
+- [Serial.print()](#serialprint)
+- [Serial.println()](#serialprintln)
+- [Serial.write()](#serialwrite)
+- [write()](#write)
 
-  - En Arduino o Genuí 101 RX no funciona en el Pin 13
+---
 
-Si el seu projecte requereix fluxos de dades simultànies, consulte la
-biblioteca AltSoftSerial de Paul Stoffregen. AltSoftSerial supera una
-sèrie d’altres problemes amb el nucli SoftwareSerial, però té les seues
-pròpies limitacions. Consulte el lloc d’AltSoftSerial per a obtindre més
-informació.
+### SoftwareSerial()
 
-# Funcions
+#### Descripció
 
-  - SoftwareSerial()
-
-  - available()
-
-  - begin()
-
-  - isListening()
-
-  - overflow()
-
-  - peek()
-
-  - read()
-
-  - print()
-
-  - println()
-
-  - listen()
-
-  - write()
-
-## SoftwareSerial(rxPin, txPin, inverse\_logic)
-
-### Descripció
-
-SoftwareSerial s’usa per a crear una instància d’un objecte
-SoftwareSerial, el nom del qual s’ha de proporcionar com en l’exemple a
-continuació. L’argument lògica\_inversa és opcional i el seu valor
-predeterminat és fals. Consulte a continuació per a obtindre més detalls
-sobre el que fa. Es poden crear múltiples objectes SoftwareSerial, no
-obstant això, només un pot estar actiu en un moment donat.
+SoftwareSerial s’usa per a crear una instància d’un objecte SoftwareSerial, el nom del qual s’ha de proporcionar com en l’#### Exemple a continuació. L’argument lògica_inversa és opcional i el seu valor predeterminat és fals. Consulte a continuació per a obtindre més detalls sobre el que fa. Es poden crear múltiples objectes SoftwareSerial, no obstant això, només un pot estar actiu en un moment donat.
 
 Ha de cridar a `SoftwareSerial.begin()` per a habilitar la comunicació.
 
-### Paràmetres
+#### Sintaxi
 
-  - **rxPin**: el pin en el qual rebre dades en sèrie
+`SoftwareSerial(rxPin, txPin, invese_logic)`
 
-  - **txPin**: el pin en el qual transmetre dades en sèrie
+#### Paràmetres
 
-  - **inverse\*\_\*logic**: s’utilitza per a invertir el sentit dels
-    bits entrants (el valor predeterminat és la lògica normal). Si
-    s’estableix, SoftwareSerial tracta un BAIX (0 volts en el pin,
-    normalment) en el pin Rx com un bit 1 (l’estat inactiu) i un ALT (5
-    volts en el pin, normalment) com un bit 0. També afecta la forma en
-    què escriu en el pin Tx. El valor predeterminat és fals.
+- **rxPin**: el pin en el qual rebre dades en sèrie
+- **txPin**: el pin en el qual transmetre dades en sèrie
+- **inverse_logic**: s’utilitza per a invertir el sentit dels bits entrants (el valor predeterminat és la lògica normal). Si s’estableix, SoftwareSerial tracta un BAIX (0 volts en el pin, normalment) en el pin Rx com un bit 1 (l’estat inactiu) i un ALT (5 volts en el pin, normalment) com un bit 0. També afecta la forma en què escriu en el pin Tx. El valor predeterminat és fals.
 
-**Advertiment**: no ha de connectar dispositius que emeten dades en
-sèrie fora del rang que Arduino pot manejar, normalment de 0 V a 5 V,
-per a una placa que funciona a 5 V, i de 0 V a 3,3 V per a una placa que
-funciona a 3,3 V.
+> ⚠️ _**Advertiment**: no ha de connectar dispositius que emeten dades en sèrie fora del rang que Arduino pot manejar, normalment de 0 V a 5 V, per a una placa que funciona a 5 V, i de 0 V a 3,3 V per a una placa que funciona a 3,3 V._
 
-### Exemple
+#### Exemple
 
-``` Arduino
+```Arduino
 #include <SoftwareSerial.h>
 const byte rxPin = 2;
 const byte txPin = 3;
@@ -115,29 +76,33 @@ const byte txPin = 3;
 SoftwareSerial mySerial (rxPin, txPin);
 ```
 
-## SoftwareSerial: available()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Obtinga la quantitat de bytes (caràcters) disponibles per a llegir des
-d’un port serie de programari. Aquests són dades que ja van arribar i
-es van emmagatzemar en el búfer de recepció en sèrie.
+---
 
-### Sintaxi
+### available()
 
-mySerial.available()
+#### Descripció
 
-### Paràmetres
+Obtinga la quantitat de bytes (caràcters) disponibles per a llegir des d’un port serie de programari. Aquests són dades que ja van arribar i es van emmagatzemar en el búfer de recepció en sèrie.
+
+#### Sintaxi
+
+`mySerial.available()`
+
+#### Paràmetres
 
 cap
 
-### Devolucions
+#### Retorna
 
 el nombre de bytes disponibles per a llegir
 
-### Exemple
+#### Exemple
 
-``` Arduino
+```Arduino
 // include the SoftwareSerial library so you can use its functions: +
 #include <SoftwareSerial.h>
 
@@ -162,25 +127,33 @@ void loop() {
 }
 ```
 
-## SoftwareSerial: begin(speed)
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Estableix la velocitat (taxa de bauds) per a la comunicació en sèrie.
-Les velocitats de transmissió admeses són 300, 600, 1200, 2400, 4800,
-9600, 14400, 19200, 28800, 31250, 38400, 57600 i 115200.
+---
 
-### Paràmetres
+### begin
+
+#### Descripció
+
+Estableix la velocitat (taxa de bauds) per a la comunicació en sèrie. Les velocitats de transmissió admeses són 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 31250, 38400, 57600 i 115200.
+
+#### Sintaxi
+
+`mySerial.begin(speed)`
+
+#### Paràmetres
 
 **speed**: la taxa de bauds (long)
 
-### Devolucions
+#### Retorna
 
 cap
 
-### Exemple
+#### Exemple
 
-``` Arduino
+```Arduino
 // include the SoftwareSerial library so you can use its functions:
 #include <SoftwareSerial.h>
 
@@ -203,28 +176,33 @@ void loop() {
 }
 ```
 
-## SoftwareSerial: isListening()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Proves per a veure si el port serie del programari sol·licitat està
-escoltant activament.
+---
 
-### Sintaxi
+### isListening()
+
+#### Descripció
+
+Proves per a veure si el port serie del programari sol·licitat està escoltant activament.
+
+#### Sintaxi
 
 mySerial.isListening()
 
-### Paràmetres
+#### Paràmetres
 
 cap
 
-### Devolucions
+#### Retorna
 
 booleà
 
-### Exemple
+#### Exemple
 
-``` Arduino
+```Arduino
 #include <SoftwareSerial.h>
 
 // software serial : TX = digital pin 10, RX = digital pin 11
@@ -248,33 +226,35 @@ void loop()
 }
 ```
 
-## SoftwareSerial: overflow()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Proves per a veure si s’ha produït un desbordament del búfer en sèrie
-del programari. Cridar a aquesta funció esborra l’indicador de
-desbordament, cosa que significa que les crides posteriors retornaran
-fals llevat que s’haja rebut i descartat un altre byte de dades
-mentrestant.
+---
+
+### overflow()
+
+#### Descripció
+
+Proves per a veure si s’ha produït un desbordament del búfer en sèrie del programari. Cridar a aquesta funció esborra l’indicador de desbordament, cosa que significa que les crides posteriors #### Retornaran fals llevat que s’haja rebut i descartat un altre byte de dades mentrestant.
 
 El búfer serial del programari pot contindre 64 bytes.
 
-### Sintaxi
+#### Sintaxi
 
-mySerial.overflow()
+`mySerial.overflow()`
 
-### Paràmetres
+#### Paràmetres
 
 cap
 
-### Devolucions
+#### Retorna
 
 booleà
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 #include <SoftwareSerial.h>
 
 // software serial : TX = digital pin 10, RX = digital pin 11
@@ -298,28 +278,31 @@ void loop()
 }
 ```
 
-## SoftwareSerial: peek
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Retorna un caràcter que es va rebre en el pin RX del port serie del
-programari. No obstant això, a diferència de read(), les crides
-posteriors a aquesta funció retornaran el mateix caràcter.
+---
 
-Tinga en compte que només una instància de SoftwareSerial pot rebre
-dades entrants alhora (seleccione quin amb la funció listen()).
+### peek
 
-### Paràmetres
+#### Descripció
+
+Retorna un caràcter que es va rebre en el pin RX del port serie del programari. No obstant això, a diferència de `read()`, les crides posteriors a aquesta funció #### Retornaran el mateix caràcter.
+
+Tinga en compte que només una instància de SoftwareSerial pot rebre dades entrants alhora (seleccione quin amb la funció `listen()`).
+
+#### Paràmetres
 
 cap
 
-### Devolucions
+#### Retorna
 
 El caràcter llegit, o -1 si no hi ha cap disponible
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 SoftwareSerial mySerial(10,11);
 
 void setup()
@@ -333,26 +316,29 @@ void loop()
 }
 ```
 
-## SoftwareSerial: read
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Retorna un caràcter que es va rebre en el pin RX del port serie del
-programari. Tinga en compte que només una instància de SoftwareSerial
-pot rebre dades entrants alhora (seleccione quin amb la funció
-listen()).
+---
 
-### Paràmetres
+### read
+
+#### Descripció
+
+Retorna un caràcter que es va rebre en el pin RX del port serie del programari. Tinga en compte que només una instància de `SoftwareSerial` pot rebre dades entrants alhora (seleccione quin amb la funció `listen()`).
+
+#### Paràmetres
 
 cap
 
-### Devolucions
+#### Retorna
 
 El caràcter llegit, o -1 si no hi ha cap disponible
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 SoftwareSerial mySerial(10,11);
 
 void setup()
@@ -366,27 +352,31 @@ void loop()
 }
 ```
 
-## SoftwareSerial: print(data)
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Imprimeix dades en el pin de transmissió del port serie del programari.
-Funciona igual que la funció Serial.print().
+---
 
-### Paràmetres
+### print
+
+#### Descripció
+
+Imprimeix dades en el pin de transmissió del port serie del programari. Funciona igual que la funció `Serial.print()`.
+
+#### Paràmetres
 
 veure Serial.print() per a més detalles
 
-### Devolucions
+#### Retorna
 
 byte
 
-print() retornarà el nombre de bytes escrits, encara que llegir aqueix
-número és opcional
+print() Retornarà el nombre de bytes escrits, encara que llegir aqueix número és opcional
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 SoftwareSerial serial(10,11);
 int analogValue;
 
@@ -420,75 +410,57 @@ void loop()
 }
 ```
 
-## Serial.print()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Imprimeix dades en el port serial com a text ASCII llegible per humans.
-Aquest comando pot prendre moltes formes. Els números s’imprimeixen
-utilitzant un caràcter ASCII per a cada dígit. Els flotants
-s’imprimeixen de manera similar com a dígits ASCII, per defecte amb
-dos decimals. Els bytes s’envien com un sol caràcter. Els caràcters i
-les cadenes s’envien tal qual. Per exemple:
+---
 
-  - Serial.print(78) dona "78"
+### Serial.print()
 
-  - Serial.print(1.23456) dona "1.23"
+#### Descripció
 
-  - Serial.print('N') dona "N"
+Imprimeix dades en el port serial com a text ASCII llegible per humans. Aquest comando pot prendre moltes formes. Els números s’imprimeixen utilitzant un caràcter ASCII per a cada dígit. Els flotants s’imprimeixen de manera similar com a dígits ASCII, per defecte amb dos decimals. Els bytes s’envien com un sol caràcter. Els caràcters i les cadenes s’envien tal qual. Per #### Exemple:
 
-  - Serial.print("Hola món") dona "Hola món".
+- Serial.print(78) dona "78"
+- Serial.print(1.23456) dona "1.23"
+- Serial.print('N') dona "N"
+- Serial.print("Hola món") dona "Hola món".
 
-Un segon paràmetre opcional especifica la base (format) a usar; els
-valors permesos són BIN (binari o base 2), OCT (octal o base 8), DEC
-(decimal o base 10), HEX (hexadecimal o base 16). Per a números de punt
-flotant, aquest paràmetre especifica el nombre de llocs decimals que
-s’usaran. Per exemple:
+Un segon paràmetre opcional especifica la base (format) a usar; els valors permesos són BIN (binari o base 2), OCT (octal o base 8), DEC (decimal o base 10), HEX (hexadecimal o base 16). Per a números de punt flotant, aquest paràmetre especifica el nombre de llocs decimals que s’usaran. Per Exemple:
 
-  - Serial.print(78, BIN) dona "1001110"
+- Serial.print(78, BIN) dona "1001110"
+- Serial.print(78, OCT) dona "116"
+- Serial.print(78, DEC) dona "78"
+- Serial.print(78, HEX) dona "4E"
+- Serial.print(1.23456, 0) dona "1"
+- Serial.print(1.23456, 2) dona "1.23"
+- Serial.print(1.23456, 4) dona "1.2345"
 
-  - Serial.print(78, OCT) dona "116"
+Pot passar cadenes basades en memòria flaix a `Serial.print()` tancant-les amb F(). Per Exemple:
 
-  - Serial.print(78, DEC) dona "78"
+- `Serial.print(F("Hola món"))`
 
-  - Serial.print(78, HEX) dona "4E"
+Per a enviar dades sense conversió a la seua representació com a caràcters, use `Serial.write()`.
 
-  - Serial.print(1.23456, 0) dona "1"
+#### Sintaxi
 
-  - Serial.print(1.23456, 2) dona "1.23"
+`Serial.print(val)`
 
-  - Serial.print(1.23456, 4) dona "1.2345"
+`Serial.print(valor, format)`
 
-Pot passar cadenes basades en memòria flaix a Serial.print() tancant-les
-amb F(). Per exemple:
+#### Paràmetres
 
-  - Serial.print(F("Hola món"))
+- _Serial_: objecte de port serie. Consulte la llista de ports serie disponibles per a cada placa en la pàgina principal Sèrie.
+- _val_: el valor a imprimir. Tipus de dades permeses: qualsevol tipus de dades.
 
-Per a enviar dades sense conversió a la seua representació com a
-caràcters, use Serial.write().
+#### Retorna
 
-### Sintaxi
+print() Retorna el nombre de bytes escrits, encara que llegir aqueix número és opcional. Tipus de dades: size_t.
 
-Serial.print(val)
+#### Exemple
 
-Serial.print(valor, format)
-
-### Paràmetres
-
-  - *Serial*: objecte de port serie. Consulte la llista de ports serie
-    disponibles per a cada placa en la pàgina principal Sèrie.
-
-  - *val*: el valor a imprimir. Tipus de dades permeses: qualsevol tipus
-    de dades.
-
-### Devolucions
-
-print() retorna el nombre de bytes escrits, encara que llegir aqueix
-número és opcional. Tipus de dades: size\_t.
-
-### Codi d’exemple
-
-``` arduino
+```arduino
 /*
 Uses a for loop to print numbers in various formats.
 */
@@ -533,34 +505,38 @@ void loop()
 }
 ```
 
-### Notes i Advertiments
+> NOTES I ADVERTIMENTS
+>
+> _Per a obtindre informació sobre l’asincronia de Serial.print(), consulte la secció Notes i advertiments de la pàgina de referència de Serial.write()._
 
-Per a obtindre informació sobre l’asincronia de Serial.print(), consulte
-la secció Notes i advertiments de la pàgina de referència de
-Serial.write().
+#### Veure també
 
-## SoftwareSerial: println(data)
+- [Funcions](#funcions)
 
-### Descripció
+---
+
+### println
+
+#### Descripció
 
 Imprimeix dades en el pin de transmissió del port serie del programari,
 seguit d’un retorn de carro i un salt de línia. Funciona igual que la
 funció Serial.println().
 
-### Paràmetres
+#### Paràmetres
 
 veure Serial.println() per a més detalles
 
-### Devolucions
+#### Retorna
 
 byte
 
-println() retornarà el nombre de bytes escrits, encara que llegir aqueix
+println() #### Retornarà el nombre de bytes escrits, encara que llegir aqueix
 número és opcional
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 SoftwareSerial serial(10,11);
 int analogValue;
 
@@ -600,41 +576,36 @@ binary
 }
 ```
 
-## Serial.println()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Imprimeix dades en el port serie com a text ASCII llegible per humans
-seguit d’un caràcter de retorn de carro (ASCII 13 o '\\r') i un caràcter
-de nova línia (ASCII 10 o '\\n'). Aquest comando pren les mateixes
-formes que Serial.print().
+---
 
-### Sintaxi
+### Serial.println()
 
-  - Serial.println(val)
+#### Descripció
 
-  - Serial.println(valor, format)
+Imprimeix dades en el port serie com a text ASCII llegible per humans seguit d’un caràcter de retorn de carro (ASCII 13 o '\\r') i un caràcter de nova línia (ASCII 10 o '\\n'). Aquest comando pren les mateixes formes que Serial.print().
 
-### Paràmetres
+#### Sintaxi
 
-  - *Sèrie*: objecte de port serie. Consulte la llista de ports serie
-    disponibles per a cada placa en la pàgina principal Sèrie.
+- Serial.println(val)
+- Serial.println(valor, format)
 
-  - *val*: el valor a imprimir. Tipus de dades permeses: qualsevol tipus
-    de dades.
+#### Paràmetres
 
-  - *format*: especifica la base numèrica (per a tipus de dades
-    integrals) o el nombre de llocs decimals (per a tipus de punt
-    flotant).
+- _Sèrie_: objecte de port serie. Consulte la llista de ports serie disponibles per a cada placa en la pàgina principal Sèrie.
+- _val_: el valor a imprimir. Tipus de dades permeses: qualsevol tipus de dades.
+- _format_: especifica la base numèrica (per a tipus de dades integrals) o el nombre de llocs decimals (per a tipus de punt flotant).
 
-### Devolucions
+#### Retorna
 
-println() retorna el nombre de bytes escrits, encara que llegir aqueix
-número és opcional. Tipus de dades: size\_t.
+println() #### Retorna el nombre de bytes escrits, encara que llegir aqueix número és opcional. Tipus de dades: size_t.
 
-### Codi d’exemple
+#### Exemple
 
-``` arduino
+```arduino
 /*
 Analog input reads an analog input on analog in 0, prints the value out.
 created 24 March 2006 by Tom Igoe
@@ -665,37 +636,37 @@ void loop()
 }
 ```
 
-### Notes i Advertiments
+> NOTES I ADVERTIMENTS
+>
+> Per a obtindre informació sobre l’asincronia de Serial.println(), consulte la secció Notes i advertiments de la pàgina de referència de Serial.write().
 
-Per a obtindre informació sobre l’asincronia de Serial.println(),
-consulte la secció Notes i advertiments de la pàgina de referència de
-Serial.write().
+#### Veure també
 
-## SoftwareSerial: listen()
+- [Funcions](#funcions)
 
-### Descripció
+---
 
-Habilita el port serie del programari seleccionat per a escoltar. Només
-un port serie de programari pot escoltar alhora; les dades que arriben
-per altres ports seran descartats. Qualsevol dada ja rebuda es descarta
-durant l’anomenada a listen() (llevat que la instància donada ja estiga
-escoltant).
+### listen()
 
-### Sintaxi
+#### Descripció
 
-miSerial.listen()
+Habilita el port serie del programari seleccionat per a escoltar. Només un port serie de programari pot escoltar alhora; les dades que arriben per altres ports seran descartats. Qualsevol dada ja rebuda es descarta durant l’anomenada a listen() (llevat que la instància donada ja estiga escoltant).
 
-### Paràmetres
+#### Sintaxi
 
-mySerial: el nom de la instància a escoltar
+`miSerial.listen()`
 
-### Devolucions
+#### Paràmetres
+
+`mySerial`: el nom de la instància a escoltar
+
+#### Retorna
 
 booleà: Retorna vertader si reemplaça a un altre
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 #include <SoftwareSerial.h>
 
 // software serial : TX = digital pin 10, RX = digital pin 11
@@ -738,27 +709,31 @@ void loop()
 }
 ```
 
-## SoftwareSerial: write(data)
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Imprimeix dades en el pin de transmissió del port serie del programari
-com a bytes sense format. Funciona igual que la funció Serial.write().
+---
 
-### Paràmetres
+### write
 
-Serial.write() per a més detalles
+#### Descripció
 
-### Devolucions
+Imprimeix dades en el pin de transmissió del port serie del programari com a bytes sense format. Funciona igual que la funció `Serial.write()`.
+
+#### Paràmetres
+
+`Serial.write()` per a més detalls
+
+#### Retorna
 
 byte
 
-write() retornarà el nombre de bytes escrits, encara que llegir aqueix
-número és opcional
+write() Retornarà el nombre de bytes escrits, encara que llegir aqueix número és opcional
 
-### Exemple
+#### Exemple
 
-``` arduino
+```arduino
 SoftwareSerial mySerial(10, 11);
 
 void setup()
@@ -774,43 +749,39 @@ and return the length of the string.
 }
 ```
 
-## Serial.write()
+#### Veure també
 
-### Descripció
+- [Funcions](#funcions)
 
-Escriu dades binàries en el port serie. Aquestes dades s’envien com un
-byte o sèrie de bytes; per a enviar els caràcters que representen els
-dígits d’un número, use la funció print() en el seu lloc.
+---
 
-### Sintaxi
+### Serial.write()
 
-  - Serial.write(val)
+#### Descripció
 
-  - Sèrie.escriure(cadena)
+Escriu dades binàries en el port serie. Aquestes dades s’envien com un byte o sèrie de bytes; per a enviar els caràcters que representen els dígits d’un número, use la funció print() en el seu lloc.
 
-  - Serial.write(buf, len)
+#### Sintaxi
 
-### Paràmetres
+- `Serial.write(val)`
+- `Sèrie.escriure(cadena)`
+- `Serial.write(buf, len)`
 
-*Sèrie*: objecte de port serie. Consulte la llista de ports serie
-disponibles per a cada placa en la pàgina principal Sèrie.
+#### Paràmetres
 
-*val*: un valor per a enviar com un sol byte.
+- **Sèrie**: objecte de port serie. Consulte la llista de ports serie disponibles per a cada placa en la pàgina principal Sèrie.
+- **val**: un valor per a enviar com un sol byte.
+- **str**: una cadena per a enviar com una sèrie de bytes.
+- **buf**: una matriu per a enviar com una sèrie de bytes.
+- **len**: el nombre de bytes que s’enviaran des de la matriu.
 
-*str*: una cadena per a enviar com una sèrie de bytes.
+#### Retorna
 
-*buf*: una matriu per a enviar com una sèrie de bytes.
+write() Retornarà el nombre de bytes escrits, encara que llegir aqueix número és opcional. Tipus de dades: size_t.
 
-*len*: el nombre de bytes que s’enviaran des de la matriu.
+#### Exemple
 
-### Devolucions
-
-write() retornarà el nombre de bytes escrits, encara que llegir aqueix
-número és opcional. Tipus de dades: size\_t.
-
-### Codi d’exemple
-
-``` arduino
+```arduino
 void setup()
 {
     Serial.begin(9600);
@@ -824,28 +795,11 @@ return the length of the string.
 }
 ```
 
-### Notes i Advertiments
+> NOTES I ADVERTIMENTS
+>
+> A partir d’Arduino IDE 1.0, la transmissió en sèrie és asíncrona. Si hi ha suficient espai buit en el búfer de transmissió, `Serial.write()` tornarà abans que es transmeta qualsevol caràcter a través de la sèrie. Si el búfer de transmissió està ple, Serial.write() es bloquejarà fins que hi haja suficient espai en el búfer. Per a evitar el bloqueig d’anomenades a Serial.write(), primer pot verificar la quantitat d’espai lliure en el búfer de transmissió usant availableForWrite().
 
-A partir d’Arduino IDE 1.0, la transmissió en sèrie és asíncrona. Si hi
-ha suficient espai buit en el búfer de transmissió, Serial.write()
-tornarà abans que es transmeta qualsevol caràcter a través de la sèrie.
-Si el búfer de transmissió està ple, Serial.write() es bloquejarà fins
-que hi haja suficient espai en el búfer. Per a evitar el bloqueig
-d’anomenades a Serial.write(), primer pot verificar la quantitat
-d’espai lliure en el búfer de transmissió usant availableForWrite().
+#### Exemples
 
-# Exemples
-
-  - [Software Serial
-    Example](https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample):
-    Utilitze aquesta biblioteca…​ perquè a vegades un port serie no és
-    suficient\!
-
-  - [Two Port
-    Receive](https://www.arduino.cc/en/Tutorial/TwoPortReceive):
-    Treballa amb múltiples ports serials de programari.
-
-# Nota
-
-Traduït de la referència d’arduino
-(<https://www.arduino.cc/en/Reference/SoftwareSerial>) el 25/01/2022.
+- [Software Serial Example](https://docs.arduino.cc/tutorials/communication/SoftwareSerialExample): Utilitze aquesta biblioteca…​ perquè a vegades un port serie no és suficient\!
+- [Two Port Receive](https://www.arduino.cc/en/Tutorial/TwoPortReceive): Treballa amb múltiples ports serials de programari.
